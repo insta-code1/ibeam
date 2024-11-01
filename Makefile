@@ -17,18 +17,18 @@ $(OUTPUT_DIR):
 	mkdir -p $(OUTPUT_DIR)
 
 # Target to generate a new release of the Helm chart and save it locally
-generate-local-helm-chart: $(OUTPUT_DIR)
+helm-generate-chart: $(OUTPUT_DIR)
 	helm package $(CHART_DIR) -d $(OUTPUT_DIR)
 	@echo "Helm chart packaged and saved to $(OUTPUT_DIR)"
 
 
 # Target to deploy the Helm chart to the k3s server
-deploy-to-k3s: generate-local-helm-chart
+helm-deploy-to-k3s: helm-generate-chart
 	helm upgrade --install $(RELEASE_NAME) $(OUTPUT_DIR)/$(RELEASE_NAME)-*.tgz --create-namespace --namespace $(K3S_NAMESPACE)
 	@echo "Helm chart deployed to k3s server at $(K3S_SERVER)"
 
 # Target to install the Helm chart to the k3s server
-helm-install: generate-local-helm-chart
+helm-install: helm-generate-chart
 	helm install $(RELEASE_NAME) $(OUTPUT_DIR)/$(RELEASE_NAME)-*.tgz --namespace $(K3S_NAMESPACE) --create-namespace
 	@echo "Helm chart installed to k3s server in namespace $(K3S_NAMESPACE)"
 
@@ -38,4 +38,5 @@ helm-uninstall:
 	helm uninstall $(RELEASE_NAME) --namespace $(K3S_NAMESPACE)
 	@echo "Helm release $(RELEASE_NAME) uninstalled from k3s server at $(K3S_SERVER)"
 
-.PHONY: generate-local-helm-chart deploy-to-k3s uninstall
+.PHONY: helm-template helm-generate-chart helm-deploy-to-k3s helm-install helm-uninstall
+
