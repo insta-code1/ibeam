@@ -49,11 +49,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /livez
-              port: http
+              port: 5001
           readinessProbe:
             httpGet:
               path: /readyz
-              port: http
+              port: 5001
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
